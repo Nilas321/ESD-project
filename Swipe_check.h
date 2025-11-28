@@ -10,6 +10,6 @@ typedef enum {
 } Swipe_Dir_t;
 
 // Function Prototype
-Swipe_Dir_t Swipe_Check(void);
+void StartSwipeCheck(void);
 
 #endif
