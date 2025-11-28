@@ -6,7 +6,6 @@
 #include "flappy_game.h"
 #include "2048_game.h"
 #include <stdio.h> 
-#include "Swipe_check.h"
 
 /* ==========================================
    MENU LOGIC
@@ -22,10 +21,10 @@ void DrawMainMenu(void) {
     GUI_DrawHLine(160, 0, 240);
     GUI_DrawHLine(240, 0, 240);
 
-    GUI_DispStringHCenterAt("A: SNAKE", 120, 22);
-    GUI_DispStringHCenterAt("B: BRICK", 120, 82);
-    GUI_DispStringHCenterAt("C: FLAPPY", 120, 142);
-    GUI_DispStringHCenterAt("D: 2048", 120, 202);
+    GUI_DispStringHCenterAt("A: SNAKE", 120, 30);
+    GUI_DispStringHCenterAt("B: BRICK", 120, 110);
+    GUI_DispStringHCenterAt("C: FLAPPY", 120, 190);
+    GUI_DispStringHCenterAt("D: 2048", 120, 270);
 }
 
 #define APP_MAIN_STK_SZ (1024U)
@@ -52,7 +51,7 @@ __NO_RETURN void app_main (void *argument) {
   __HAL_RCC_CRC_CLK_ENABLE();
   GUI_Init();                 // Initialize Display
   
-  //Keypad_Init();              // Initialize Keypad (Reclaim GPIO F)
+  Keypad_Init();              // Initialize Keypad (Reclaim GPIO F)
 
   DrawMainMenu();
 
@@ -73,32 +72,27 @@ __NO_RETURN void app_main (void *argument) {
     /* --- MENU SELECTION LOGIC --- */
     
     // Zone 1: Top (Snake)
-    if (key == 'A' || (isTouched && tY < 60)) {
+    if (key == 'A' || (isTouched && tY < 80)) {
         StartSnakeGame();
         DrawMainMenu();
         // Clear any touch that happened during game exit
         while(Touch_GetCoord(&tX, &tY)); 
     }
     // Zone 2: Middle-Top (Brick)
-    else if (key == 'B' || (isTouched && tY >= 60 && tY < 120)) {
+    else if (key == 'B' || (isTouched && tY >= 80 && tY < 160)) {
         StartBrickGame();
         DrawMainMenu();
         while(Touch_GetCoord(&tX, &tY));
     }
     // Zone 3: Middle-Bottom (Flappy)
-    else if (key == 'C' || (isTouched && tY >= 120 && tY < 180)) {
+    else if (key == 'C' || (isTouched && tY >= 160 && tY < 240)) {
         StartFlappyGame();
         DrawMainMenu();
         while(Touch_GetCoord(&tX, &tY));
     }
     // Zone 4: Bottom (2048)
-    else if (key == 'D' || (isTouched && tY >= 180 && tY < 240)) {
+    else if (key == 'D' || (isTouched && tY >= 240)) {
         Start2048Game();
-        DrawMainMenu();
-        while(Touch_GetCoord(&tX, &tY));
-    }
-		 else if (key == '*' || (isTouched && tY >= 240)) {
-        StartSwipeCheck();
         DrawMainMenu();
         while(Touch_GetCoord(&tX, &tY));
     }

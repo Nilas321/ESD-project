@@ -39,4 +39,4 @@
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\MDK-Middleware_Graphics\1.1.0\emWin\Include\Global.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\MDK-Middleware_Graphics\1.1.0\emWin\Include\GUI_Version.h \
   snake_game.h input.h brick_game.h flappy_game.h 2048_game.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h Swipe_check.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h

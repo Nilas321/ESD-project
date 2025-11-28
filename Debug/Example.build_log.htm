@@ -5,10 +5,10 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.37.0.0
 Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Sarat Nilas qtqi Flex license: MDK Professional 5.37 (Flex): 50 user(s) (mdk_pro) Borrow: 15 Dec 2025
+License Information: Sarat Nilas qtqi Flex license: MDK Professional 5.37 (Flex) (mdk_pro) Borrow: 15 Dec 2025
  
 Tool Versions:
-Toolchain:       MDK Professional 5.37 (Flex): 50 user(s)  Version: 5.37.0.0
+Toolchain:       MDK Professional 5.37 (Flex)  Version: 5.37.0.0
 Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
 C Compiler:      ArmClang.exe V6.18
 Assembler:       Armasm.exe V6.18
@@ -26,67 +26,11 @@ Project File Date:  11/28/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
-Rebuild target 'Debug'
-compiling flappy_game.c...
-compiling example.c...
-compiling input.c...
-compiling main.c...
-snake_game.c(152): warning: unsequenced modification and access to 'snake_len' [-Wunsequenced]
-            snake[snake_len++] = snake[snake_len-1];
-                           ^           ~~~~~~~~~
-1 warning generated.
-compiling snake_game.c...
-compiling sound.c...
-compiling Touch_STMPE811.c...
-compiling LCD_X.c...
-compiling cmsis_os1.c...
-compiling brick_game.c...
-compiling Swipe_check.c...
-Driver_I2C.c(67): warning: implicitly declaring library function 'memset' with type 'void *(void *, int, unsigned int)' [-Wimplicit-function-declaration]
-    memset(&caps, 0, sizeof(caps));
-    ^
-Driver_I2C.c(67): note: include the header <string.h> or explicitly provide a declaration for 'memset'
-1 warning generated.
-compiling Driver_I2C.c...
+Build target 'Debug'
 compiling 2048_game.c...
-compiling rtx_delay.c...
-assembling irq_armv7m.S...
-compiling rtx_evflags.c...
-compiling rtx_memory.c...
-compiling rtx_lib.c...
-compiling rtx_evr.c...
-compiling rtx_kernel.c...
-compiling rtx_mutex.c...
-compiling rtx_mempool.c...
-compiling rtx_semaphore.c...
-compiling rtx_msgqueue.c...
-compiling os_systick.c...
-compiling RTX_Config.c...
-compiling rtx_system.c...
-compiling rtx_timer.c...
-compiling stm32f4xx_hal.c...
-compiling stm32f4xx_hal_cortex.c...
-compiling stm32f4xx_hal_dma.c...
-compiling stm32f4xx_hal_dma_ex.c...
-compiling stm32f4xx_hal_gpio.c...
-compiling EventRecorder.c...
-compiling stm32f4xx_hal_pwr.c...
-compiling stm32f4xx_hal_pwr_ex.c...
-compiling rtx_thread.c...
-compiling stm32f4xx_hal_rcc_ex.c...
-compiling stm32f4xx_hal_rcc.c...
-compiling stm32f4xx_hal_sram.c...
-compiling stm32f4xx_hal_msp.c...
-compiling stm32f4xx_ll_fsmc.c...
-assembling startup_stm32f407xx.s...
-compiling GUI_X_RTE.c...
-compiling GUIConf.c...
-compiling system_stm32f4xx.c...
-compiling LCDConf_MCBQVGA_LG.c...
-compiling stm32f4xx_hal_i2c.c...
 linking...
-Program Size: Code=67736 RO-data=32840 RW-data=292 ZI-data=106920  
-".\Debug\Example.axf" - 0 Error(s), 2 Warning(s).
+Program Size: Code=64768 RO-data=32752 RW-data=292 ZI-data=106888  
+".\Debug\Example.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -182,8 +126,8 @@ Package Vendor: Keil
    * Component: ::Device:STM32Cube Framework:1.0.0 (API)
 
    * Component: ARM::CMSIS Driver:I2C:Custom:1.0.0
-      Source file:   CMSIS/Driver/DriverTemplates/Driver_I2C.c
       Include file:  CMSIS/Driver/Include/Driver_I2C.h
+      Source file:   CMSIS/Driver/DriverTemplates/Driver_I2C.c
 
    * Component: ARM::CMSIS:CORE:5.6.0
 
@@ -192,37 +136,37 @@ Package Vendor: Keil
       Source file:   CMSIS/RTOS2/RTX/Library/cmsis_os1.c
 
    * Component: ARM::CMSIS:RTOS2:Keil RTX5:Source:5.5.4
-      Source file:   CMSIS/RTOS2/RTX/Template/svc_user.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_mutex.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_lib.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_evr.c
+      Source file:   CMSIS/RTOS2/RTX/Template/Semaphore.c
       Source file:   CMSIS/RTOS2/RTX/Template/Timer.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_delay.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_mempool.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_thread.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_evflags.c
-      Source file:   CMSIS/RTOS2/RTX/Source/GCC/irq_armv7m.S
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_msgqueue.c
-      Source file:   CMSIS/RTOS2/Source/os_systick.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_kernel.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_system.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_memory.c
-      Source file:   CMSIS/RTOS2/RTX/Template/Thread.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_semaphore.c
-      Source file:   CMSIS/RTOS2/RTX/Source/rtx_timer.c
-      Source file:   CMSIS/RTOS2/RTX/Config/RTX_Config.c
       Source file:   CMSIS/RTOS2/RTX/Template/main.c
-      Include file:  CMSIS/RTOS2/RTX/Config/RTX_Config.h
-      Include file:  CMSIS/RTOS2/RTX/Include/rtx_os.h
+      Source file:   CMSIS/RTOS2/RTX/Config/RTX_Config.c
       Source file:   CMSIS/RTOS2/RTX/Template/Events.c
+      Source file:   CMSIS/RTOS2/RTX/Template/MsgQueue.c
+      Source file:   CMSIS/RTOS2/RTX/Template/svc_user.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_kernel.c
+      Source file:   CMSIS/RTOS2/RTX/Template/Thread.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_thread.c
+      Include file:  CMSIS/RTOS2/RTX/Include/rtx_os.h
+      Include file:  CMSIS/RTOS2/RTX/Config/RTX_Config.h
       Source file:   CMSIS/RTOS2/RTX/Template/MemPool.c
       Source file:   CMSIS/RTOS2/RTX/Template/Mutex.c
-      Source file:   CMSIS/RTOS2/RTX/Template/MsgQueue.c
-      Source file:   CMSIS/RTOS2/RTX/Template/Semaphore.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_evr.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_system.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_evflags.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_mutex.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_msgqueue.c
+      Source file:   CMSIS/RTOS2/RTX/Source/GCC/irq_armv7m.S
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_timer.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_delay.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_mempool.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_lib.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_memory.c
+      Source file:   CMSIS/RTOS2/Source/os_systick.c
+      Source file:   CMSIS/RTOS2/RTX/Source/rtx_semaphore.c
 
    * Component: Keil.ARM Compiler::Compiler:Event Recorder:DAP:1.5.1
-      Source file:   Source/EventRecorder.c
       Include file:  Config/EventRecorderConf.h
+      Source file:   Source/EventRecorder.c
       Include file:  Include/EventRecorder.h
 
    * Component: Keil.MCBSTM32F400::Board Support:Touchscreen:2.0.0
@@ -232,9 +176,9 @@ Package Vendor: Keil
       Source file:   MDK/Boards/Keil/MCBSTM32F400/Common/LCD_X.c
 
    * Component: Keil::Device:STM32Cube Framework:STM32CubeMX:1.1.0
-      Source file:   STCubeGenerated/Src/stm32f4xx_hal_msp.c
       Include file:  MX_Device.h
       Include file:  STCubeGenerated/Inc/stm32f4xx_hal_conf.h
+      Source file:   STCubeGenerated/Src/stm32f4xx_hal_msp.c
 
    * Component: Keil::Device:STM32Cube HAL:Common:1.8.1
       Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
@@ -258,35 +202,35 @@ Package Vendor: Keil
       Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
 
    * Component: Keil::Device:STM32Cube HAL:RCC:1.8.1
-      Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
       Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
+      Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
 
    * Component: Keil::Device:STM32Cube HAL:SRAM:1.8.1
-      Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sram.c
       Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_fsmc.c
+      Source file:   Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sram.c
 
    * Component: Keil::Device:Startup:2.6.3
-      Source file:   MDK/Device/Source/ARM/STM32F40xxx_41xxx_OPT.s
-      Source file:   MDK/Device/Source/ARM/STM32F4xx_OTP.s
-      Include file:  Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
       Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/arm/startup_stm32f407xx.s
+      Source file:   MDK/Device/Source/ARM/STM32F4xx_OTP.s
+      Source file:   MDK/Device/Source/ARM/STM32F40xxx_41xxx_OPT.s
+      Include file:  Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
       Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
 
    * Component: Segger.MDK-Pro::Graphics:CORE:6.24.0
-      Source file:   emWin/Sample/Template/RTOS1/GUI_MultiThread.c
-      Source file:   emWin/Sample/Template/RTOS1/GUI_SingleThread.c
-      Source file:   emWin/Sample/Template/RTOS2/GUI_TemplateThread.c
-      Source file:   emWin/Sample/GUI_X/GUI_X_RTE.c
-      Source file:   emWin/Sample/Template/RTOS2/GUI_SingleThread.c
+      Include file:  emWin/Include/GUI.h
       Source file:   emWin/Sample/Config/GUIConf.c
       Source file:   emWin/Sample/Template/RTOS1/GUI_TemplateThread.c
+      Source file:   emWin/Sample/Template/RTOS1/GUI_MultiThread.c
+      Source file:   emWin/Sample/Template/RTOS2/GUI_TemplateThread.c
+      Source file:   emWin/Sample/Template/RTOS2/GUI_SingleThread.c
       Library file:  emWin/Lib/ARM/GUI_CM4F_L.lib
-      Include file:  emWin/Include/GUI.h
+      Source file:   emWin/Sample/Template/RTOS1/GUI_SingleThread.c
+      Source file:   emWin/Sample/GUI_X/GUI_X_RTE.c
       Source file:   emWin/Sample/Template/RTOS2/GUI_MultiThread.c
 
    * Component: Segger.MDK-Pro::Graphics:Display:MCBQVGA_LG:16-bit IF:6.24.0
       Source file:   emWin/Sample/LCDConf/GUIDRV_FlexColor/Keil/LCDConf_MCBQVGA_LG.c
-Build Time Elapsed:  00:00:09
+Build Time Elapsed:  00:00:10
 </pre>
 </body>
 </html>

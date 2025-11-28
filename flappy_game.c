@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include "input.h" // <--- Now includes Touch_GetCoord
-
+#include "sound.h"
 /************************************************************
  * FLAPPY BIRD – STANDALONE ENGINE
  ************************************************************/
@@ -117,7 +117,7 @@ void StartFlappyGame(void)
         if (!game_active)
         {
             game_over_screen();
-
+            Sound_GameOverBeep();  
             /* Wait for 'C' or Touch to restart */
             // 1. Small delay so we don't accidentally restart instantly
             osDelay(500);

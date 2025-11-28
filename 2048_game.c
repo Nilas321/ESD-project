@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "input.h" // Contains Keypad_Get_Key
 #include "Swipe_check.h" // Contains Swipe_Dir_t and Touch_Update_Swipe
-
+#include "sound.h"
 /************************************************************
  * 2048 GAME ENGINE
  ************************************************************/
@@ -52,7 +52,7 @@ void Start2048Game(void)
     // Debounce State Variable (only for Keypad)
     static char last_key = 0;
 
-    // Dynamic Layout Calculation
+    // Dynamic Layout Calculation (Unchanged)
     int scr_w = LCD_GetXSize();
     int scr_h = LCD_GetYSize();
     
@@ -65,6 +65,8 @@ void Start2048Game(void)
     OFFSET_Y = (scr_h - (BOX_SIZE * GRID_SIZE)) / 2 + 10; 
 
     init_game();
+    // INITIAL RENDER: Must draw the initial board state with 2 tiles
+    draw_scene(); 
 
     while (1)
     {
@@ -77,6 +79,7 @@ void Start2048Game(void)
         int moved = 0;
         dir_t board_move_dir = DIR_UP; // Default, will be overwritten
         int input_detected = 0;
+        int needs_render = 0; // NEW FLAG: To control when rendering occurs
 
         // 1. DETERMINE MOVEMENT DIRECTION (Swipe takes priority)
         if (swipe_dir != SWIPE_NONE) {
@@ -98,13 +101,16 @@ void Start2048Game(void)
             else if (current_key == '4') { board_move_dir = DIR_LEFT; input_detected = 1; }
             else if (current_key == '6') { board_move_dir = DIR_RIGHT; input_detected = 1; }
             
-            // Check for system keys (These also count as input)
+            // Check for system keys
             if (current_key == '#') { last_key = current_key; return; } // Exit
             if (current_key == 'D') { // Restart
                 init_game();
                 osDelay(200);
-                last_key = current_key; // Update last key to prevent rapid restart
-                continue; // Skip the rest of the logic/rendering for this frame
+                last_key = current_key;
+                needs_render = 1; // Needs a render after re-initialization
+                
+                // Jump to rendering/delay section
+                goto RENDER_AND_WAIT;
             }
         }
 
@@ -121,10 +127,18 @@ void Start2048Game(void)
                 // B. REGENERATE/UPDATE GAME ONLY IF A TILE MOVED/MERGED
                 if (moved) {
                     spawn_tile();
+                    needs_render = 1; // Board changed, needs render
                     
                     if (!can_move()) {
                         game_over = 1;
+                        needs_render = 1; // Game over state needs to be drawn
                     }
+                }
+                
+                // If a valid move input was received but no tile moved (e.g., board is full in that direction), 
+                // we still need a delay before the next input can be processed.
+                if (input_detected) {
+                    osDelay(GAME_SPEED_MS);
                 }
             }
         }
@@ -133,11 +147,16 @@ void Start2048Game(void)
         last_key = current_key;
 
         /* ------------------------------
-         * RENDER
+         * RENDER (Controlled by needs_render flag)
          * ------------------------------ */
-        draw_scene();
+        RENDER_AND_WAIT: // Label for 'D' key restart jump
+        
+        if (needs_render) {
+            draw_scene();
+        }
 
         if (game_over) {
+            Sound_GameOverBeep();  
             draw_game_over();
             
             // Wait loop for Game Over screen (requires physical key input)
@@ -147,6 +166,7 @@ void Start2048Game(void)
                 if (k == 'D') {
                     init_game();
                     osDelay(200);
+                    draw_scene(); // Draw the new initial board
                     break;
                 }
                 
@@ -156,11 +176,15 @@ void Start2048Game(void)
             }
         }
         else {
-            // Delay to maintain frame rate / reduce CPU load
-            osDelay(GAME_SPEED_MS); 
+            // Delay to maintain frame rate / reduce CPU load, but only if we didn't just move/restart
+            // The `if (input_detected)` block above already handled a move delay, so this is for idle time.
+            if (!needs_render) {
+                 osDelay(GAME_SPEED_MS); 
+            }
         }
     }
 }
+
 // -----------------------------------------------------------------------------
 // Initialization, Logic, and Rendering functions remain unchanged below
 // -----------------------------------------------------------------------------

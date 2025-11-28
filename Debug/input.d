@@ -1,8 +1,8 @@
-./debug/input.o: input.c RTE\_Debug\Pre_Include_Global.h input.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+./debug/input.o: input.c RTE\_Debug\Pre_Include_Global.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm4.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_version.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_compiler.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armclang.h \
@@ -30,6 +30,7 @@
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_i2c_ex.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h \
+  input.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Driver\Include\Driver_I2C.h \
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Driver\Include\Driver_Common.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdbool.h

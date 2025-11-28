@@ -1,0 +1,94 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.37.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Sarat Nilas qtqi Flex license: MDK Professional 5.37 (Flex) (mdk_pro) Borrow: 15 Dec 2025
+ 
+Tool Versions:
+Toolchain:       MDK Professional 5.37 (Flex)  Version: 5.37.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.18
+Assembler:       Armasm.exe V6.18
+Linker/Locator:  ArmLink.exe V6.18
+Library Manager: ArmAr.exe V6.18
+Hex Converter:   FromElf.exe V6.18
+CPU DLL:         SARMCM3.DLL V5.37.0.0
+Dialog DLL:      DCM.DLL V1.17.5.0
+Target DLL:      UL2CM3.DLL V1.164.7.0
+Dialog DLL:      TCM.DLL V1.56.1.0
+ 
+<h2>Project:</h2>
+E:\ESD-project\Current_Version.uvprojx
+Project File Date:  11/28/2025
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Release'
+Error instantiating RTE components
+Error #540: 'ARM::CMSIS:RTOS2:Keil RTX5:Library:5.5.4' component is not available for target 'Release', pack 'ARM.CMSIS.5.9.0' is not selected
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                https://www.keil.com/pack/ARM.CMSIS.6.2.0.pack
+                ARM.CMSIS.6.2.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: I2C Version: 2.4.0
+   * Component: Custom Version: 1.0.0
+   * Component: CORE Version: 6.1.1
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.MDK-Middleware_Graphics.1.1.0.pack
+                Keil.MDK-Middleware_Graphics.1.1.0
+                Middleware Graphics for Keil MDK-Professional and MDK-Plus
+   * Component: CORE Version: 6.24.0
+   * Component: MCBQVGA_LG Variant: 16-bit IF Version: 6.24.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32F4xx_DFP.3.1.1.pack
+                Keil.STM32F4xx_DFP.3.1.1
+                STMicroelectronics STM32F4 Series Device Support
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/CMSIS
+  ./RTE/Device/STM32F407IGHx/STCubeGenerated
+  ./RTE/Device/STM32F407IGHx/STCubeGenerated/Inc
+  ./RTE/_Release
+  C:/Users/Nilas/AppData/Local/Arm/Packs/ARM/CMSIS/6.2.0/CMSIS/Core/Include
+  C:/Users/Nilas/AppData/Local/Arm/Packs/ARM/CMSIS/6.2.0/CMSIS/Driver/Include
+  C:/Users/Nilas/AppData/Local/Arm/Packs/Keil/MDK-Middleware_Graphics/1.1.0/emWin/Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ::CMSIS Driver:I2C:2.4.0 (API)
+      Include file:  CMSIS/Driver/Include/Driver_I2C.h
+
+   * Component: ARM::CMSIS Driver:I2C:Custom:1.0.0
+      Source file:   CMSIS/Driver/DriverTemplates/Driver_I2C.c
+
+   * Component: ARM::CMSIS:CORE:6.1.1
+
+   * Component: Segger.MDK-Pro::Graphics:CORE:6.24.0
+      Include file:  emWin/Include/GUI.h
+      Source file:   emWin/Sample/Config/GUIConf.c
+      Source file:   emWin/Sample/Template/RTOS2/GUI_TemplateThread.c
+      Source file:   emWin/Sample/Template/RTOS2/GUI_SingleThread.c
+      Library file:  emWin/Lib/ARM/GUI_CM4F_L.lib
+      Source file:   emWin/Sample/GUI_X/GUI_X_RTE.c
+      Source file:   emWin/Sample/Template/RTOS2/GUI_MultiThread.c
+
+   * Component: Segger.MDK-Pro::Graphics:Display:MCBQVGA_LG:16-bit IF:6.24.0
+      Source file:   emWin/Sample/LCDConf/GUIDRV_FlexColor/Keil/LCDConf_MCBQVGA_LG.c
+Target not created.
+Build Time Elapsed:  00:00:04
+</pre>
+</body>
+</html>
