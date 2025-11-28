@@ -85,7 +85,7 @@ void StartFlappyGame(void)
         /* Jump Controls (Key '5' OR Touch Tap) */
         if (game_active) {
             // Check for Key '5' OR (Touch is active AND it wasn't active last frame)
-            if (key == '5' || (is_touched && !prev_touched)) {
+            if (key == '5' || (is_touched)) {
                 bird.vel_y = JUMP_FORCE;
             }
         }

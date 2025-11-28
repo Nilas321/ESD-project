@@ -1,3 +1,4 @@
+
 #include "2048_game.h"
 #include "GUI.h"
 #include "LCD.h"
@@ -15,6 +16,22 @@
 #define CELL_PADDING    4
 #define GAME_SPEED_MS   50
 
+osMessageQueueId_t GameEventQueue;
+osThreadId_t       InputTaskHandle;
+
+/* Event Definitions */
+typedef enum {
+    EVENT_NONE = 0,
+    EVENT_MOVE_UP,
+    EVENT_MOVE_DOWN,
+    EVENT_MOVE_LEFT,
+    EVENT_MOVE_RIGHT,
+    EVENT_RESET,
+    EVENT_QUIT
+} GameEvent_t;
+
+/* Constants */
+#define INPUT_POLL_RATE_MS  50  // Check input every 50ms
 /* UI Dimensions */
 static int BOX_SIZE; 
 static int OFFSET_X;
@@ -40,97 +57,133 @@ static void draw_game_over(void);
 // Helper for logic
 static void rotate_board(void);
 static int  slide_and_merge_left(void);
+/* Input Polling Task - The "Producer" */
 
+void InputTask(void *argument)
+{
+    static char last_key = 0;
+    
+    while(1)
+    {
+        GameEvent_t event = EVENT_NONE;
+
+        // 1. Check Touch Swipe
+        Swipe_Dir_t dir = Touch_Update_Swipe();
+        
+        // 2. Check Keypad
+        char current_key = Keypad_Get_Key();
+        int is_key_press = (current_key != 0 && current_key != last_key);
+        last_key = current_key; // Update history
+
+        // 3. Map Inputs to Game Events
+        if (dir == SWIPE_UP || (is_key_press && current_key == '2')) {
+            event = EVENT_MOVE_UP;
+        }
+        else if (dir == SWIPE_DOWN || (is_key_press && current_key == '8')) {
+            event = EVENT_MOVE_DOWN;
+        }
+        else if (dir == SWIPE_LEFT || (is_key_press && current_key == '4')) {
+            event = EVENT_MOVE_LEFT;
+        }
+        else if (dir == SWIPE_RIGHT || (is_key_press && current_key == '6')) {
+            event = EVENT_MOVE_RIGHT;
+        }
+        else if (is_key_press && current_key == 'D') {
+            event = EVENT_RESET;
+        }
+        else if (is_key_press && current_key == '#') {
+            event = EVENT_QUIT;
+        }
+
+        // 4. If valid event, send to Queue
+        if (event != EVENT_NONE) {
+            osMessageQueuePut(GameEventQueue, &event, 0, 0); // 0 timeout (don't block if full)
+        }
+
+        osDelay(INPUT_POLL_RATE_MS);
+    }
+}
 /************************************************************
  * PUBLIC ENTRY POINT
  ************************************************************/
 void Start2048Game(void)
 {
+    GameEvent_t current_event;
+    char debug_buf[30];
+
+    // 1. Initialize GUI
     GUI_Clear();
     
-    // 1. Define Debounce State Variable
-    static char last_key = 0;
+    // 2. Create RTOS Objects
+    // Create a queue capable of holding 5 events
+    GameEventQueue = osMessageQueueNew(5, sizeof(GameEvent_t), NULL); 
+    
+    // Create the Input Task (Priority Normal or Above Normal)
+    const osThreadAttr_t input_attr = { .name = "InputTask", .priority = osPriorityAboveNormal, .stack_size = 512 };
+    InputTaskHandle = osThreadNew(InputTask, NULL, &input_attr);
 
-    // Dynamic Layout Calculation
+    // 3. Calculate Layout (Existing Code)
     int scr_w = LCD_GetXSize();
     int scr_h = LCD_GetYSize();
-    
     int min_dim = (scr_w < scr_h) ? scr_w : scr_h;
-    
     BOX_SIZE = (min_dim - 20) / GRID_SIZE; 
     if (BOX_SIZE < 10) BOX_SIZE = 10; 
-
     OFFSET_X = (scr_w - (BOX_SIZE * GRID_SIZE)) / 2;
     OFFSET_Y = (scr_h - (BOX_SIZE * GRID_SIZE)) / 2 + 10; 
 
+    // 4. Initial Draw
     init_game();
+    draw_scene();
 
+    // 5. EVENT LOOP (The Consumer)
     while (1)
     {
-        /* ------------------------------
-         * INPUT CONTROL & DEBOUNCE
-         * ------------------------------ */
-        char current_key = Keypad_Get_Key();
-        int moved = 0;
+        // BLOCK HERE until an event arrives. CPU usage drops to ~0% here.
+        osStatus_t status = osMessageQueueGet(GameEventQueue, &current_event, NULL, osWaitForever);
 
-        // CHECK: Key is pressed AND is different from previous frame
-        if (current_key != 0 && current_key != last_key) 
+        if (status == osOK)
         {
-            if (!game_over) {
-                if (current_key == '2')      moved = move_board(DIR_UP);
-                else if (current_key == '8') moved = move_board(DIR_DOWN);
-                else if (current_key == '4') moved = move_board(DIR_LEFT);
-                else if (current_key == '6') moved = move_board(DIR_RIGHT);
+            int moved = 0;
+
+            if (!game_over) 
+            {
+                switch (current_event) {
+                    case EVENT_MOVE_UP:    moved = move_board(DIR_UP); break;
+                    case EVENT_MOVE_DOWN:  moved = move_board(DIR_DOWN); break;
+                    case EVENT_MOVE_LEFT:  moved = move_board(DIR_LEFT); break;
+                    case EVENT_MOVE_RIGHT: moved = move_board(DIR_RIGHT); break;
+                    default: break;
+                }
             }
 
-            /* System Keys */
-            if (current_key == '#') return;
-            if (current_key == 'D') {
+            // Handle System Events
+            if (current_event == EVENT_RESET) {
                 init_game();
-                osDelay(200);
+                draw_scene(); // Force redraw immediately
+                continue;
+            }
+            if (current_event == EVENT_QUIT) {
+                // Terminate Input Task and Return
+                osThreadTerminate(InputTaskHandle);
+                return; 
             }
 
-            /* ------------------------------
-             * MISSING LOGIC RESTORED HERE
-             * ------------------------------ */
-            // We only need to check this if a key was actually pressed
+            // Game Logic
             if (moved) {
-                spawn_tile(); // Add new '2' or '4'
-                
+                spawn_tile();
                 if (!can_move()) {
                     game_over = 1;
                 }
+                // ONLY Render if something actually happened
+                draw_scene();
             }
-        }
-        
-        // Update history for next frame
-        last_key = current_key;
-
-        /* ------------------------------
-         * RENDER
-         * ------------------------------ */
-        draw_scene();
-
-        if (game_over) {
-            draw_game_over();
             
-            // Wait loop for Game Over screen
-            while (1) {
-                char k = Keypad_Get_Key();
-                
-                if (k == 'D') {
-                    init_game();
-                    osDelay(200);
-                    break;
-                }
-                
-                if (k == '#') return;
-                
-                osDelay(50);
+            // Handle Game Over UI (Asynchronous)
+            if (game_over) {
+                draw_game_over();
+                // Note: The loop continues, but inputs won't trigger moves 
+                // until EVENT_RESET is received.
             }
-        }
-        else {
-            osDelay(GAME_SPEED_MS); 
         }
     }
 }
