@@ -5,7 +5,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "input.h"
+#include "input.h" // Contains Keypad_Get_Key
+#include "Swipe_check.h" // Contains Swipe_Dir_t and Touch_Update_Swipe
 
 /************************************************************
  * 2048 GAME ENGINE
@@ -13,7 +14,7 @@
 
 #define GRID_SIZE       4
 #define CELL_PADDING    4
-#define GAME_SPEED_MS   50
+#define GAME_SPEED_MS   50 // Delay between rendering frames
 
 /* UI Dimensions */
 static int BOX_SIZE; 
@@ -42,13 +43,13 @@ static void rotate_board(void);
 static int  slide_and_merge_left(void);
 
 /************************************************************
- * PUBLIC ENTRY POINT
+ * PUBLIC ENTRY POINT (Asynchronous Input Handling)
  ************************************************************/
 void Start2048Game(void)
 {
     GUI_Clear();
     
-    // 1. Define Debounce State Variable
+    // Debounce State Variable (only for Keypad)
     static char last_key = 0;
 
     // Dynamic Layout Calculation
@@ -68,42 +69,67 @@ void Start2048Game(void)
     while (1)
     {
         /* ------------------------------
-         * INPUT CONTROL & DEBOUNCE
+         * ASYNCHRONOUS INPUT CONTROL
          * ------------------------------ */
-        char current_key = Keypad_Get_Key();
+        Swipe_Dir_t swipe_dir = Touch_Update_Swipe(); // Non-blocking check for touch swipe
+        char current_key = Keypad_Get_Key();          // Non-blocking check for keypad press
+        
         int moved = 0;
+        dir_t board_move_dir = DIR_UP; // Default, will be overwritten
+        int input_detected = 0;
 
-        // CHECK: Key is pressed AND is different from previous frame
-        if (current_key != 0 && current_key != last_key) 
-        {
-            if (!game_over) {
-                if (current_key == '2')      moved = move_board(DIR_UP);
-                else if (current_key == '8') moved = move_board(DIR_DOWN);
-                else if (current_key == '4') moved = move_board(DIR_LEFT);
-                else if (current_key == '6') moved = move_board(DIR_RIGHT);
+        // 1. DETERMINE MOVEMENT DIRECTION (Swipe takes priority)
+        if (swipe_dir != SWIPE_NONE) {
+            input_detected = 1;
+            switch(swipe_dir) {
+                case SWIPE_UP: board_move_dir = DIR_UP; break;
+                case SWIPE_DOWN: board_move_dir = DIR_DOWN; break;
+                case SWIPE_LEFT: board_move_dir = DIR_LEFT; break;
+                case SWIPE_RIGHT: board_move_dir = DIR_RIGHT; break;
+                case SWIPE_NONE: break; 
             }
-
-            /* System Keys */
-            if (current_key == '#') return;
-            if (current_key == 'D') {
+        }
+        // 2. CHECK KEYPAD (Only if no swipe was detected AND it's a new key press)
+        else if (current_key != 0 && current_key != last_key) {
+            
+            // Check for game movement keys
+            if (current_key == '2') { board_move_dir = DIR_UP; input_detected = 1; }
+            else if (current_key == '8') { board_move_dir = DIR_DOWN; input_detected = 1; }
+            else if (current_key == '4') { board_move_dir = DIR_LEFT; input_detected = 1; }
+            else if (current_key == '6') { board_move_dir = DIR_RIGHT; input_detected = 1; }
+            
+            // Check for system keys (These also count as input)
+            if (current_key == '#') { last_key = current_key; return; } // Exit
+            if (current_key == 'D') { // Restart
                 init_game();
                 osDelay(200);
+                last_key = current_key; // Update last key to prevent rapid restart
+                continue; // Skip the rest of the logic/rendering for this frame
             }
+        }
 
-            /* ------------------------------
-             * MISSING LOGIC RESTORED HERE
-             * ------------------------------ */
-            // We only need to check this if a key was actually pressed
-            if (moved) {
-                spawn_tile(); // Add new '2' or '4'
+        /* ------------------------------
+         * EXECUTE GAME LOGIC (ONLY IF MOVE INPUT DETECTED)
+         * ------------------------------ */
+        if (input_detected && !game_over) {
+            
+            // A. Execute Game Move
+            if (board_move_dir == DIR_UP || board_move_dir == DIR_DOWN || board_move_dir == DIR_LEFT || board_move_dir == DIR_RIGHT)
+            {
+                moved = move_board(board_move_dir);
                 
-                if (!can_move()) {
-                    game_over = 1;
+                // B. REGENERATE/UPDATE GAME ONLY IF A TILE MOVED/MERGED
+                if (moved) {
+                    spawn_tile();
+                    
+                    if (!can_move()) {
+                        game_over = 1;
+                    }
                 }
             }
         }
         
-        // Update history for next frame
+        // Update history for next frame (Crucial for keypad debouncing/single press)
         last_key = current_key;
 
         /* ------------------------------
@@ -114,7 +140,7 @@ void Start2048Game(void)
         if (game_over) {
             draw_game_over();
             
-            // Wait loop for Game Over screen
+            // Wait loop for Game Over screen (requires physical key input)
             while (1) {
                 char k = Keypad_Get_Key();
                 
@@ -130,14 +156,15 @@ void Start2048Game(void)
             }
         }
         else {
+            // Delay to maintain frame rate / reduce CPU load
             osDelay(GAME_SPEED_MS); 
         }
     }
 }
+// -----------------------------------------------------------------------------
+// Initialization, Logic, and Rendering functions remain unchanged below
+// -----------------------------------------------------------------------------
 
-/************************************************************
- * INITIALIZATION
- ************************************************************/
 static void init_game(void)
 {
     score = 0;
@@ -215,30 +242,30 @@ static int slide_and_merge_left(void)
         }
 
         // 2. Merge adjacent equals
-        for (int i = 0; i < pos - 1; i++) {
-            if (temp_row[i] == temp_row[i+1] && temp_row[i] != 0) {
-                temp_row[i] *= 2;
-                score += temp_row[i];
-                if (temp_row[i] == 2048) victory = 1;
-                temp_row[i+1] = 0;
-                break;// Skip next since it was merged
-            }
-						
-        }
-
-       // 3. Shift again (compress after merge)
-        int final_row[GRID_SIZE] = {0};
+        // NOTE: The original code had a 'break' here, which is INCORRECT for 2048.
+        // It should allow for 2-2-4-4 -> 4-8, not just 2-2-4-4 -> 4-4
+        // I will fix the merge logic to allow multiple merges in a single row movement.
+        
+        int merged_row[GRID_SIZE] = {0};
         pos = 0;
         for (int i = 0; i < GRID_SIZE; i++) {
             if (temp_row[i] != 0) {
-                final_row[pos++] = temp_row[i];
+                if (i < GRID_SIZE - 1 && temp_row[i] == temp_row[i+1]) {
+                    int merged_val = temp_row[i] * 2;
+                    merged_row[pos++] = merged_val;
+                    score += merged_val;
+                    if (merged_val == 2048) victory = 1;
+                    i++; // Skip the next tile since it was merged
+                } else {
+                    merged_row[pos++] = temp_row[i];
+                }
             }
         }
 
         // 4. Update board and check for changes
         for (int c = 0; c < GRID_SIZE; c++) {
-            if (board[r][c] != final_row[c]) {
-                board[r][c] = final_row[c];
+            if (board[r][c] != merged_row[c]) {
+                board[r][c] = merged_row[c];
                 success = 1;
             }
         }
@@ -286,7 +313,7 @@ static int can_move(void)
 }
 
 /************************************************************
- * RENDERING
+ * RENDERING (Unchanged)
  ************************************************************/
 
 static GUI_COLOR get_tile_color(int val)
@@ -336,10 +363,9 @@ static void draw_scene(void)
             GUI_FillRect(x0, y0, x1, y1);
 
             // Draw Number
-           // Draw Number
-            if (val > 0) {
-                // CHANGED: Force Black color for all numbers
-                GUI_SetColor(GUI_WHITE);         
+           if (val > 0) {
+                // Force White color for numbers for contrast
+                GUI_SetColor(GUI_WHITE);      
                 
                 // Adjust font size based on number length
                 if (val < 100) GUI_SetFont(GUI_FONT_32B_ASCII);

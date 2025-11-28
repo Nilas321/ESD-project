@@ -11,4 +11,4 @@
   C:\Users\Nilas\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\RTOS2\Include\cmsis_os2.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdint.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h input.h
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h input.h Swipe_check.h

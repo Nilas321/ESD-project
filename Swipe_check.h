@@ -11,5 +11,5 @@ typedef enum {
 
 // Function Prototype
 void StartSwipeCheck(void);
-
+Swipe_Dir_t Touch_Update_Swipe(void);
 #endif
