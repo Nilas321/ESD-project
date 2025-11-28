@@ -8,8 +8,6 @@
 #include "input.h"
 #include "sound.h"  // <-- sound integration (PB4 beeps)
 
-/*ABCDEF*/
-
 /************************************************************
  * BRICK BREAKER – MULTI-LEVEL ENGINE (WITH SOUND)
  ************************************************************/
