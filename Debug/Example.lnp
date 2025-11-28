@@ -8,6 +8,7 @@
 ".\debug\2048_game.o"
 ".\debug\sound.o"
 ".\debug\driver_i2c.o"
+".\debug\swipe_check.o"
 ".\debug\lcd_x.o"
 ".\debug\touch_stmpe811.o"
 ".\debug\cmsis_os1.o"

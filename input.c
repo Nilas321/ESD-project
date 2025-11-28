@@ -1,7 +1,6 @@
 #include "input.h"
 #include "stm32f4xx.h"
-#include "Driver_I2C.h"
-#include <stdlib.h> // For abs()
+#include "Driver_I2C.h" 
 
 /* =========================================================================
    KEYPAD SECTION (GPIO PORT C)
@@ -143,75 +142,4 @@ int Touch_GetCoord(int16_t *x, int16_t *y) {
         return 1; 
     }
     return 0; 
-}
-
-typedef enum {
-    STATE_IDLE,
-    STATE_TRACKING,
-    STATE_LOCKED     // Swipe detected, waiting for release
-} Swipe_State_t;
-
-#define SWIPE_THRESHOLD  40  // Minimum pixels to count as a swipe
-
-Swipe_Dir_t Touch_Update_Swipe(void) {
-    // Persistent state variables
-    static Swipe_State_t state = STATE_IDLE;
-    static int16_t start_x = 0, start_y = 0;
-    
-    int16_t curr_x, curr_y;
-    Swipe_Dir_t detected_swipe = SWIPE_NONE;
-
-    // 1. Poll Hardware
-    int touch_active = Touch_GetCoord(&curr_x, &curr_y);
-
-    // 2. State Machine
-    switch (state) {
-        
-        case STATE_IDLE:
-            if (touch_active) {
-                // New touch started
-                start_x = curr_x;
-                start_y = curr_y;
-                state = STATE_TRACKING;
-            }
-            break;
-
-        case STATE_TRACKING:
-            if (touch_active) {
-                int16_t diff_x = curr_x - start_x;
-                int16_t diff_y = curr_y - start_y;
-
-                // Check absolute distance
-                if (abs(diff_x) > SWIPE_THRESHOLD || abs(diff_y) > SWIPE_THRESHOLD) {
-                    
-                    // Determine dominant axis
-                    if (abs(diff_x) > abs(diff_y)) {
-                        // Horizontal Swipe
-                        detected_swipe = (diff_x > 0) ? SWIPE_RIGHT : SWIPE_LEFT;
-                    } else {
-                        // Vertical Swipe
-                        // Note: Ensure this matches your screen orientation logic
-                        detected_swipe = (diff_y > 0) ? SWIPE_UP : SWIPE_DOWN;
-                    }
-
-                    // LOCK the state so we don't double-trigger or detect lift-off noise
-                    state = STATE_LOCKED;
-                }
-            } else {
-                // User let go before crossing threshold (Tap or jitter)
-                state = STATE_IDLE;
-            }
-            break;
-
-        case STATE_LOCKED:
-            if (!touch_active) {
-                // User finally lifted finger, reset for next interaction
-                state = STATE_IDLE;
-            }
-            // While touch is still active here, we return SWIPE_NONE 
-            // and ignore all movement (thumb wobble).
-            break;
-    }
-
-    return detected_swipe;
 }
