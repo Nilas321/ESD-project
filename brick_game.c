@@ -87,7 +87,7 @@ void StartBrickGame(void)
         if (!game_active)
         {
             draw_overlay_message();
-
+            Sound_GameOverBeep();
             // Blocking wait for restart or exit
             while (1) {
                 char k = Keypad_Get_Key();

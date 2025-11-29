@@ -119,7 +119,7 @@ void StartSwipeCheck(void) {
     
     GUI_SetFont(GUI_FONT_16_ASCII);
     GUI_DispStringHCenterAt("Release + Cooldown", 120, 40);
-    GUI_DispStringHCenterAt("Press 'D' to Exit", 120, 300);
+    GUI_DispStringHCenterAt("Press '#' to Exit", 120, 300);
 
     char buf[32];
 
@@ -139,7 +139,7 @@ void StartSwipeCheck(void) {
             GUI_DrawCircle(100, 60, 2); 
         }
 
-        if (Keypad_Get_Key() == 'D') break; 
+        if (Keypad_Get_Key() == '#') break; 
 
         if (dir != SWIPE_NONE) {
             GUI_SetColor(GUI_GREEN);
